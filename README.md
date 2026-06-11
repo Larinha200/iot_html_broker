@@ -10,7 +10,7 @@
 </table>
 <br>
 
-<img alt="decoração" src="https://github.com/user-attachments/assets/d2dbb85e-4ffe-45f4-9ac0-41d31f6a9051" width="450" />
+<img alt="decoração" src="https://github.com/user-attachments/assets/d2dbb85e-4ffe-45f4-9ac0-41d31f6a9051" width="45" />
 
 ### Explicação do funcionamento do sistema
 
