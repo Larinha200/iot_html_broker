@@ -10,7 +10,7 @@
 </table>
 <br>
 
-<img alt="decoração" src="" width="450" />
+<img alt="decoração" src="https://github.com/user-attachments/assets/d2dbb85e-4ffe-45f4-9ac0-41d31f6a9051" width="450" />
 
 ### Explicação do funcionamento do sistema
 
@@ -29,7 +29,7 @@ visualizar o estado atual do dispositivo em tempo real. Para isso, a aplicação
 Quando um comando é executado pela ESP32, ela publica uma mensagem de confirmação em um tópico de status. O sistema web recebe essa mensagem e atualiza a interface, informando ao 
 usuário se o dispositivo está ligado ou desligado.
 
-<img alt="decoração" src="" width="450" />
+<img alt="decoração" src="https://github.com/user-attachments/assets/d2dbb85e-4ffe-45f4-9ac0-41d31f6a9051" width="450" />
 
 ### Tecnologias utilizadas 
 
@@ -58,7 +58,8 @@ respostas ao cliente. Seu principal diferencial é o suporte a processamento ass
 múltiplas conexões simultâneas.
 
  
-<img alt="decoração" src="" width="450" />
+<img alt="decoração" src="https://github.com/user-attachments/assets/d2dbb85e-4ffe-45f4-9ac0-41d31f6a9051" width="450" />
+
 
 ### Configurações realizadas
 
@@ -92,13 +93,15 @@ ONOFFConfiguração do Sistema WebO sistema Web foi desenvolvido utilizando Fast
 Usuário   ↓Sistema Web (FastAPI)   ↓Broker MQTT (Mosquitto)   ↓ESP32   ↓LED
 
 
-<img alt="decoração" src="" width="450" />
+<img alt="decoração" src="https://github.com/user-attachments/assets/d2dbb85e-4ffe-45f4-9ac0-41d31f6a9051" width="450" />
+
 
 ### Fotos e vídeo do sistema funcionando
 <a href="https://stupendous-package-85a.notion.site/Imagens-do-sistema-MQTT-37c27ddaa30e8032908dfacf0d02a532?source=copy_link" target="_blank" class="btn-notion">    
 📄 Imagens e vídeos do sistema</a>
 
-<img alt="decoração" src="" width="450" />
+
+<img alt="decoração" src="https://github.com/user-attachments/assets/d2dbb85e-4ffe-45f4-9ac0-41d31f6a9051" width="450" />
 
 ### Estrutura dos tópicos MQTT utilizados
 
@@ -111,8 +114,9 @@ mqtt/
 │       
 └── web/
     └── conectado
+    
 
-<img alt="decoração" src="" width="450" />
+<img alt="decoração" src="https://github.com/user-attachments/assets/d2dbb85e-4ffe-45f4-9ac0-41d31f6a9051" width="450" />
 
 ### Instruções para execução do projeto
 
@@ -155,7 +159,9 @@ client.subscribe("PROJ/ECOSSISTEMA");
 ou publicar:
 client.publish("PROJ/ECOSSISTEMA", "ON");
 
-<img alt="decoração" src="" width="450" />
+
+<img alt="decoração" src="https://github.com/user-attachments/assets/d2dbb85e-4ffe-45f4-9ac0-41d31f6a9051" width="450" />
+
 
 Servidor Broker MQTT e código da ESP32: 
 
