@@ -28,126 +28,338 @@ Quando um comando é executado pela ESP32, ela publica uma mensagem de confirma�
 usuário se o dispositivo está ligado ou desligado.
 
 
-### Tecnologias utilizadas 
+## **Tecnologias utilizadas**
 
-***ESP 32 -*** A ESP32 é um microcontrolador muito utilizado em projetos de eletrônica e Internet das Coisas (IoT). 
-Ela possui **Wi-Fi e Bluetooth integrados**, permitindo a comunicação sem fio entre dispositivos e a internet. 
-Além disso, pode ser conectada a sensores, LEDs, motores e diversos outros componentes, sendo amplamente utilizada em 
-projetos de automação, monitoramento e sistemas inteligentes.
+| **Tecnologia** | **Descrição** |
+| --- | --- |
+| **ESP32** | Microcontrolador com Wi-Fi e Bluetooth integrados, utilizado para controle do LED e comunicação MQTT |
+| **Eclipse Mosquitto** | Broker MQTT de código aberto, responsável pelo roteamento das mensagens entre os dispositivos |
+| **VS Code** | Editor de código-fonte utilizado como ambiente principal de desenvolvimento, tanto para o código da ESP32 quanto para a aplicação web |
+| **PlatformIO** | Extensão do VS Code para desenvolvimento embarcado, utilizada para programar, compilar e fazer o upload do código para a ESP32 de forma simples e eficiente |
+| **FastAPI** | Framework Python para criação da API web, com alta performance e suporte a operações assíncronas |
+| **Uvicorn** | Servidor ASGI para execução da aplicação FastAPI, gerenciando conexões simultâneas |
 
-***Eclipse Mosquitto -*** O Eclipse Mosquitto é um broker de mensagens de código aberto que utiliza o protocolo MQTT, 
-muito usado em projetos de Internet das Coisas (IoT). Sua função é receber, organizar e encaminhar mensagens entre dispositivos conectados, 
-como sensores, microcontroladores e aplicativos. Por ser leve, rápido e fácil de configurar, é amplamente utilizado em sistemas de automação e monitoramento.
+## **🧠 Resumo visual da stack tecnológica**
 
-***Vscode -*** O Visual Studio Code (VS Code) é um ambiente de desenvolvimento (IDE leve) criado pela Microsoft para a criação e edição de programas. 
-Ele oferece recursos como destaque de sintaxe, autocompletar código (IntelliSense), depuração (debug), integração com Git e suporte a extensões. 
-Por ser compatível com diversas linguagens de programação e sistemas operacionais, é amplamente utilizado no desenvolvimento de aplicações web, 
-mobile, desktop e sistemas embarcados.
+```
+Frontend (Web)      →  HTML + CSS
+Backend (API)       →  FastAPI + Uvicorn (Python)
+Comunicação         →  MQTT (Mosquitto Broker)
+Microcontrolador    →  ESP32
+IDE/Programação ESP →  VS Code + PlatformIO
+```
 
-***FastAPI -*** O FastAPI é um framework para desenvolvimento de APIs em Python, conhecido por sua alta performance e facilidade de uso. 
-Ele permite criar serviços web de forma rápida utilizando recursos modernos da linguagem, como tipagem de dados. 
-Além disso, oferece validação automática de dados, geração automática de documentação interativa e suporte a operações assíncronas, 
-tornando-o uma excelente opção para aplicações web e sistemas que precisam trocar informações pela internet.
+## Configurações realizadas
 
-***Uvicorn -*** O Uvicorn é um servidor ASGI (Asynchronous Server Gateway Interface) utilizado para executar aplicações web desenvolvidas em Python, 
-sendo amplamente utilizado com o FastAPI. Ele é responsável por receber as requisições dos usuários, encaminhá-las para a aplicação e retornar as 
-respostas ao cliente. Seu principal diferencial é o suporte a processamento assíncrono, permitindo maior desempenho e eficiência no gerenciamento de 
-múltiplas conexões simultâneas.
+### 1. Configuração do Broker MQTT (Mosquitto)
 
+O broker MQTT foi instalado e configurado utilizando o Mosquitto executando no WSL.
 
-### Configurações realizadas
+Arquivo de configuração **`*(`/etc/mosquitto/mosquitto.conf`)*`**:
 
-Configuração do Broker MQTT (Mosquitto)O broker MQTT foi instalado e configurado utilizando o Mosquitto executando no WSL (Windows Subsystem for Linux).Arquivo de configuração utilizado:
+```
+pid_file /run/mosquitto/mosquitto.pid
+persistence true
+persistence_location /var/lib/mosquitto/
+log_dest stdout
+listener 1883
+allow_anonymous false
+password_file /etc/mosquitto/passwd
+acl_file /etc/mosquitto/acl
+```
 
-pid_file /run/mosquitto/mosquitto.pidpersistence truepersistence_location /var/lib/mosquitto/log_dest stdoutlistener 1883allow_anonymous falsepassword_file /etc/mosquitto/passwdacl_file /etc/mosquitto/acl
-Explicação da configuraçãoConfiguraçãoFunçãolistener 1883Define a porta padrão do MQTTallow_anonymous falseObriga autenticação dos clientespassword_fileArquivo contendo usuários e senhasacl_file Arquivo contendo permissões de acesso aos tópicospersistence trueMantém informações do broker após reinicializaçãoConfiguração dos Usuários MQTTUsuário utilizado pela ESP32 e aplicação Web:
+**Explicação das configurações:**
 
-Usuário: esp32Senha: grupo4Configuração das ACLsPermissões configuradas para acesso aos tópicos MQTT:
+| **Configuração** | **Função** |
+| --- | --- |
+| `listener 1883` | Define a porta padrão do MQTT |
+| `allow_anonymous false` | Obriga autenticação dos clientes |
+| `password_file` | Arquivo contendo usuários e senhas |
+| `acl_file` | Arquivo contendo permissões de acesso aos tópicos |
+| `persistence true` | Mantém informações do broker após reinicialização |
 
-user esp32topic readwrite PROJ/ECOSSISTEMAAs permissões garantem que apenas usuários autorizados possam publicar ou receber mensagens no tópico utilizado pelo projeto.Configuração da RedeBroker MQTT:
+### **2. Configuração dos Usuários MQTT**
 
-IP: 192.168.0.65Porta: 1883Servidor Web (FastAPI):
+Usuário criado para a ESP32 e aplicação Web:
 
-Porta: 8000ESP32 conectada à rede:
+```
+Usuário: esp32
+Senha: grupo4
+```
 
-SSID: iotSenha: iotsenai502Configuração da ESP32A ESP32 foi configurada para:
-• Conectar à rede Wi-Fi;
-• Conectar ao broker MQTT;
-• Inscrever-se no tópico MQTT;
-• Receber comandos para acionamento do LED.Tópico utilizado:
+### **3. Configuração das ACLs**
 
-PROJ/ECOSSISTEMAMensagens aceitas:
+Permissões configuradas para acesso aos tópicos MQTT (`/etc/mosquitto/acl`):
 
-ONOFFConfiguração do Sistema WebO sistema Web foi desenvolvido utilizando FastAPI, HTML e CSS.Funcionalidades implementadas:
-• Interface para ligar o LED;
-• Interface para desligar o LED;
-• Comunicação com o broker MQTT através da biblioteca Paho MQTT;
-• Possibilidade de integração com brokers MQTT de outros grupos.Fluxo de comunicação:
+```
+user esp32
+topic readwrite PROJ/ECOSSISTEMA
+```
 
-Usuário   ↓Sistema Web (FastAPI)   ↓Broker MQTT (Mosquitto)   ↓ESP32   ↓LED
+### **4. Configuração da Rede**
 
+| **Componente** | **Configuração** |
+| --- | --- |
+| Broker MQTT IP | `192.168.0.65`  (mude de acordo com o ip da maquina que esta o broker) |
+| Broker MQTT Porta | `1883` |
+| Servidor Web (FastAPI) Porta | `8000` |
+| Wi-Fi SSID | `iot` |
+| Wi-Fi Senha | `iotsenai502` |
 
-### Fotos e vídeo do sistema funcionando
-<a href="https://stupendous-package-85a.notion.site/Imagens-do-sistema-MQTT-37c27ddaa30e8032908dfacf0d02a532?source=copy_link" target="_blank" class="btn-notion">    
-📄 Imagens e vídeos do sistema</a>
+### **5. Configuração da ESP32**
 
+A ESP32 foi configurada para:
 
-### Estrutura dos tópicos MQTT utilizados
+- Conectar à rede Wi-Fi
+- Conectar ao broker MQTT
+- Inscrever-se no tópico MQTT
+- Receber comandos para acionamento do LED
 
+**Tópico utilizado:** `PROJ/ECOSSISTEMA`
+
+**Mensagens aceitas:** `ON` / `OFF`
+
+### **6. Configuração do Sistema Web**
+
+O sistema Web foi desenvolvido utilizando FastAPI, HTML e CSS.
+
+**Funcionalidades implementadas:**
+
+- Interface para ligar o LED;
+- Interface para desligar o LED;
+- Comunicação com o broker MQTT através do python com o FastApi;
+- Possibilidade de integração com brokers MQTT de outros grupos (ajustando as informações no código);
+
+**Fluxo de comunicação:**
+
+```
+Usuário → Sistema Web (FastAPI) → Broker MQTT (Mosquitto) → ESP32 → LED
+```
+
+### **Fotos e vídeo do sistema funcionando**
+
+📸 **Clique abaixo para visualizar as imagens e vídeos do sistema:**
+
+Imagens e vídeos do sistema MQTT 
+
+### **Estrutura dos tópicos MQTT utilizados**
+
+```
 mqtt/
 ├── esp32/
 │   ├── led/
 │   │   ├── comando
 │   │   └── status
 │   └── leitura
-│       
+│
 └── web/
     └── conectado
-    
+```
 
-### Instruções para execução do projeto
+**Tópico principal utilizado no projeto:** `PROJ/ECOSSISTEMA`
 
-- Primeiro, no sudo su, use: "sudo mosquitto_passwd -c /etc/mosquitto/paswd esp 32". Ele
-irá pedir a senha.
+### **Instruções para execução do projeto**
 
-- Abra o arquivo de configuração usando: "sudo nano /etc/mosquitto/mosquitto.conf"
+### **Passo 1: Configurar o Mosquitto Broker**
 
-- Ajuste o final do arquivo usando: "allow_anonymous falsepassword_file/etc/mosquitto/paswdacl_file /etc/mosquitto/acl"
+```bash
+# Acessar como superusuário
+sudo su
 
-- Crie o controle por tópico usando: "sudo nano /etc/mosquitto/acl"
+# Criar arquivo de senhas para o usuário esp32
+sudo mosquitto_passwd -c /etc/mosquitto/passwd esp32
+# (Digite a senha: grupo4)
 
-- Depois, confirme que o arquivo foi criado usando: "ls -l /etc/mosquitto/passwd"
+# Editar arquivo de configuração
+sudo nano /etc/mosquitto/mosquitto.conf
+```
 
-- Deve aparacer algo parecido com: "rw-r--r-- 1 root root ..."
+Adicione ao final do arquivo:
 
-- Agora dê permissão usando: "sudo chmod 644 /etc/mosquitto/passwd"
+```
+allow_anonymous false
+password_file /etc/mosquitto/passwd
+acl_file /etc/mosquitto/acl
+```
 
-- Teste para ver se funcionou, usando: "sudo mosquitto -c /etc/mosquitto/mosquitto.conf -v"
+### **Passo 2: Configurar ACL (Controle de Acesso)**
 
-- Se funcionar, aparecerá: "mosquitto version 2.0.18 running"
+```bash
+# Criar arquivo ACL
+sudo nano /etc/mosquitto/acl
+```
 
-- Depois, reinicie o servidor usando: "sudo systemctl restart mosquitto"
+Adicione:
 
-- Abra outro terminal e execute:
+```
+user esp32
+topic readwrite PROJ/ECOSSISTEMA
+```
 
-Executar tópico:
-mosquitto_sub -h localhost -t PROJ/ECOSSISTEMA -u esp32 -P SUA_SENHA
+### **Passo 3: Ajustar permissões**
 
-Enviar mensagem:
-mosquitto_pub -h localhost -t PROJ/ECOSSISTEMA -m "teste" -u esp32 -P SUA_SENHA
+```bash
+# Confirmar criação do arquivo
+ls -l /etc/mosquitto/passwd
 
-Agora sua ESP32 pode conectar usando:
-client.connect("ESP32Client", "esp32", "SUA_SENHA");
+#Deve aparecer algo parecido como:
+ "rw-r--r-- 1 root root ..."
+ 
+# Dar permissão adequada
+sudo chmod 644 /etc/mosquitto/passwd
 
-e
+# Testar configuração
+sudo mosquitto -c /etc/mosquitto/mosquitto.conf -v
 
+#Se funcionar, aparecerá: 
+"mosquitto versão 2.0.18 em execução"
+```
+
+### **Passo 4: Iniciar o broker**
+
+```bash
+# Reiniciar o serviço
+sudo systemctl restart mosquitto
+```
+
+### **Passo 5: Testar o broker**
+
+No terminal aonde esta o broker (subscribe), coloque para “escutar a mensagem”:
+
+```bash
+mosquitto_sub -h localhost -t PROJ/ECOSSISTEMA -u esp32 -P grupo4
+```
+
+Em outro terminal (publish), coloque para enviar a mensagem:
+
+```
+mosquitto_pub -h ***IP_DO_BROKER*** -t PROJ/ECOSSISTEMA -m "teste" -u SEU_USUARIO -P SUA_SENHA
+```
+
+| **Parâmetro** | **Significado** | **Exemplo** |
+| --- | --- | --- |
+| `-h` | Host (endereço do broker) | `-h 192.168.0.65` |
+| `-t` | Tópico | `-t PROJ/ECOSSISTEMA` |
+| `-u` | Usuário | `-u esp32` |
+| `-P` | Senha | `-P grupo4` |
+| `-m` | Mensagem (apenas no pub) | `-m "ON"` |
+- no ***IP_DO_BROKER*** utilize o ip da maquina que esta conectada ao broker, para descobrir abra o terminal da maquina e digite ***ipconfig,***  estara ao lado de  ***Endereço IPv4. . . . . . . .  . . . . . . . : 192.168.0.137.***
+
+### **Passo 6: Configurar a ESP32**
+
+- Para utilizar o codigo da esp32 voce precisa que a maquina esteja usando o plataformIO, alem de nao poder misturar com o codigo da API, ***somente o codigo da ESP32.***
+
+No código da ESP32 (***ao final do readme esta o repositorio)***, configure:
+
+```cpp
+// Conexão ao broker
+client.connect("ESP32Client", "esp32", "grupo4");
+
+// Subscribe ao tópico
 client.subscribe("PROJ/ECOSSISTEMA");
 
-ou publicar:
+// Publicar mensagem
 client.publish("PROJ/ECOSSISTEMA", "ON");
+```
 
+### **Passo 7: Executar o servidor web (FastAPI)**
 
-### Servidor Broker MQTT e código da ESP32: 
+- para executar o servidor você fara em uma outra maquina utilizando o VS Code e o FastApi, instale as dependências e o ambiente virtual abaixo:
 
-<a href="https://github.com/Katrisbug/mosquitto-esp32" target="_blank" class="btn-github">    
-📄 Repositório Broker MQTT e código ESP</a>
+#### **Passo a passo no Linux/WSL ou macOS:**
+
+```bash
+# 1. Criar o ambiente virtual
+python3 -m venv venv
+
+# 2. Ativar o ambiente virtual
+source venv/bin/activate
+
+# 3. Instalar as dependências
+pip install -r requirements.txt
+
+# 4. Verificar se tudo foi instalado corretamente
+pip list
+```
+
+#### **Passo a passo no Windows (PowerShell):**
+
+```powershell
+# 1. Criar o ambiente virtual
+python -m venv venv
+
+# 2. Ativar o ambiente virtual
+.\venv\Scripts\Activate.ps1
+
+# 3. Instalar as dependências
+pip install -r requirements.txt
+
+# 4. Verificar instalação
+pip list
+```
+
+dentro do ambiente virtual instale:
+
+#### **No Linux/WSL/Mac:**
+
+```bash
+# Instalar o FastAPI
+pip3 install fastapi
+
+# Instalar o servidor Uvicorn
+pip3 install uvicorn[standard]
+
+# Instalar o cliente MQTT
+pip3 install paho-mqtt
+```
+
+### **No Windows:**
+
+```bash
+# Instalar o FastAPI
+pip install fastapi
+
+# Instalar o servidor Uvicorn
+pip install uvicorn[standard]
+
+# Instalar o cliente MQTT
+pip install paho-mqtt
+```
+
+```bash
+# Instalar dependências
+pip install fastapi uvicorn paho-mqtt
+
+# Executar o servidor
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+### **Passo 8: Acessar a interface web**
+
+Abra o navegador e acesse: `http://localhost:8000`  (troque o localhost pelo ip da maquina onde esta o código da API e HTML. **`Ex: 192.168.0.65`**)
+
+### **Estrutura final do projeto**
+
+```
+projeto-mqtt/
+│
+├── venv/                       # Ambiente virtual (não versionar)
+├── .env                        # Variáveis de ambiente
+├── .gitignore                  # Ignorar venv, .env, etc.
+├── requirements.txt            # Dependências do projeto
+├── main.py                     # Código do FastAPI
+├── static/
+│   └── style.css               # Estilos CSS
+└── templates/
+    └── index.html              # Interface web
+```
+
+### **Repositórios do projeto**
+
+| **Repositório** | **Link** |
+| --- | --- |
+| **Broker MQTT e código ESP32** | [github.com/Katrisbug/mosquitto-esp32](https://github.com/Katrisbug/mosquitto-esp32) |
+
+---
+
+📌 **Projeto desenvolvido como parte da disciplina de IoT - Ecossistema MQTT**
