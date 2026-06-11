@@ -1,7 +1,7 @@
 <table>
   <tr>
     <td>
-      <img alt="logo" src="https://github.com/user-attachments/assets/2107d297-281f-4a34-b137-d9599446a10a" width="225" />
+      <img alt="logo" src="https://github.com/user-attachments/assets/2107d297-281f-4a34-b137-d9599446a10a" width="200" />
     </td>
     <td>
       <h1>PROJETO → "Ecossistema MQTT"</h1> 
